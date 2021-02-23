@@ -5,6 +5,7 @@ output:
   pdf_document: default
   Author: Diego e Milene
   html_document:
+    keep_md: true
     df_print: paged
     code_folding: hide
 ---
