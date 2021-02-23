@@ -1,6 +1,6 @@
 ---
 title: "Trabalho 2 - Estatística Computacional I"
-output:
+output: github_document
   html_notebook: default
   pdf_document: default
   Author: Diego e Milene
