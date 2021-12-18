@@ -1,0 +1,890 @@
+---
+title: "Trabalho 2 - Estatística Computacional I"
+output: github_document
+  html_notebook: default
+  pdf_document: default
+  Author: Diego e Milene
+  html_document:
+    keep_md: true
+    df_print: paged
+    code_folding: hide
+---
+
+### Leitura e ajustes
+```{r}
+#---------------Dados para Tabela 3145---------------#
+Pessoa3 <- read.csv2("Pessoa03_AL.csv")
+Pessoa5 <- read.csv2("Pessoa05_AL.csv")
+BasicoAL <- read.csv2("Basico_AL.csv")
+
+Pessoa3[Pessoa3=="X"] <- "0"
+Pessoa5[Pessoa5=="X"] <- "0"
+BasicoAL[BasicoAL=="X"] <- "0"
+
+Pessoa3 <- as.data.frame(sapply(Pessoa3, as.numeric))
+Pessoa5 <- as.data.frame(sapply(Pessoa5, as.numeric))
+BasicoAL <- as.data.frame(sapply(BasicoAL, as.numeric))
+
+Somas3 <- colSums(Pessoa3)
+SomasDT3 <- as.data.frame(Somas3)
+vecsomas3 <- SomasDT3$Somas3
+
+Somas5 <- colSums(Pessoa5)
+SomasDT5 <- as.data.frame(Somas5)
+vecsomas5 <- SomasDT5$Somas5
+
+SomasAL <- colSums(BasicoAL)
+SomasDTAL <- as.data.frame(SomasAL)
+vecsomasAL <- SomasDTAL$SomasAL
+#----------------------------------------------------#
+
+
+
+
+#---------------Dados para Tabela 3150---------------#
+
+Pessoa1 <- read.csv2("Pessoa01_AL.csv")
+Pessoa13 <- read.csv2("Pessoa13_AL.csv")
+
+#----------------------------------------------------#
+
+
+
+#---------------Dados para Tabela 3152---------------#
+Domicilio1 <- read.csv2("Domicilio01_AL.csv")
+
+Basico1 <- read.csv2("Basico_AL.csv")
+
+#----------------------------------------------------#
+
+
+options(digits=3)
+```
+
+
+
+### 3145: Parte 1 - Função Total de Homens
+```{r}
+
+calc_homensb <- function(x){
+  
+  i <- seq(89, 164, by= 5)
+  sum(x[i])
+  
+}
+
+calc_homenspr <- function(x){
+  
+  i <- seq(90, 165, by= 5)
+  sum(x[i])
+  
+}
+
+calc_homensa <- function(x){
+  
+  i <- seq(91, 166, by= 5)
+  sum(x[i])
+  
+}
+
+calc_homenspa <- function(x){
+  
+  i <- seq(92, 167, by= 5)
+  sum(x[i])
+  
+}
+
+calc_homensi <- function(x){
+  
+  i <- seq(93, 168, by= 5)
+  sum(x[i])
+  
+}
+
+auxHB <- calc_homensb(vecsomas3)
+auxHPR <- calc_homenspr(vecsomas3)
+auxHA <- calc_homensa(vecsomas3)
+auxHPA <- calc_homenspa(vecsomas3)
+auxHI <- calc_homensi(vecsomas3)
+auxHN <- 0
+
+
+```
+
+
+### 3145: Parte 2 - Função Total de Mulheres
+```{r}
+calc_womansb <- function(x){
+  
+  i <- seq(169, 244, by= 5)
+  sum(x[i])
+  
+}
+
+calc_womanspr <- function(x){
+  
+  i <- seq(170, 245, by= 5)
+  sum(x[i])
+  
+}
+
+calc_womansa <- function(x){
+  
+  i <- seq(171, 246, by= 5)
+  sum(x[i])
+  
+}
+
+calc_womanspa <- function(x){
+  
+  i <- seq(172, 247, by= 5)
+  sum(x[i])
+  
+}
+
+calc_womansi <- function(x){
+  
+  i <- seq(173, 248, by= 5)
+  sum(x[i])
+  
+}
+
+auxWB <- calc_womansb(vecsomas3)
+auxWPR <- calc_womanspr(vecsomas3)
+auxWA <- calc_womansa(vecsomas3)
+auxWPA <- calc_womanspa(vecsomas3)
+auxWI <- calc_womansi(vecsomas3)
+auxWN <- 0
+
+```
+
+
+
+
+### Agrupando por setor
+```{r}
+situac <- BasicoAL$Situacao_setor
+
+
+dataconf <- data.frame(Pessoa3[, 89:248], BasicoAL$Situacao_setor)
+
+library(dplyr)
+data2 <- dataconf %>%
+    group_by(dataconf$BasicoAL.Situacao_setor) %>% 
+    summarise_each(funs(sum))
+
+
+
+
+DataUrb <- subset(data2, data2$`dataconf$BasicoAL.Situacao_setor` %in% c("1","2","3"))
+
+DataRur <- subset(data2, data2$`dataconf$BasicoAL.Situacao_setor` %in% c("4","5","6", "7", "8"))
+```
+
+
+
+### 3145: Parte 3 - Função Total de Homens Urbanos e Rurais
+```{r}
+
+calc_homensb2 <- function(x){
+  
+  i <- seq(2, 77, by= 5)
+  sum(x[i])
+  
+}
+
+calc_homenspr2 <- function(x){
+  
+  i <- seq(3, 78, by= 5)
+  sum(x[i])
+  
+}
+
+calc_homensa2 <- function(x){
+  
+  i <- seq(4, 79, by= 5)
+  sum(x[i])
+  
+}
+
+calc_homenspa2 <- function(x){
+  
+  i <- seq(5, 80, by= 5)
+  sum(x[i])
+  
+}
+
+calc_homensi2 <- function(x){
+  
+  i <- seq(6, 81, by= 5)
+  sum(x[i])
+  
+}
+
+auxHB2U <- calc_homensb2(DataUrb)
+auxHPR2U <- calc_homenspr2(DataUrb)
+auxHA2U <- calc_homensa2(DataUrb)
+auxHPA2U <- calc_homenspa2(DataUrb)
+auxHI2U <- calc_homensi2(DataUrb)
+auxHNU <- 0
+
+auxHB2R <- calc_homensb2(DataRur)
+auxHPR2R <- calc_homenspr2(DataRur)
+auxHA2R <- calc_homensa2(DataRur)
+auxHPA2R <- calc_homenspa2(DataRur)
+auxHI2R <- calc_homensi2(DataRur)
+auxHNR <- 0
+
+```
+
+
+
+### 3145: Parte4 - Função Total de Mulheres Urbanas e Rurais
+```{r}
+calc_womansb2 <- function(x){
+  
+  i <- seq(82, 157, by= 5)
+  sum(x[i])
+  
+}
+
+calc_womanspr2 <- function(x){
+  
+  i <- seq(83, 158, by= 5)
+  sum(x[i])
+  
+}
+
+calc_womansa2 <- function(x){
+  
+  i <- seq(84, 159, by= 5)
+  sum(x[i])
+  
+}
+
+calc_womanspa2 <- function(x){
+  
+  i <- seq(85, 160, by= 5)
+  sum(x[i])
+  
+}
+
+calc_womansi2 <- function(x){
+  
+  i <- seq(86, 161, by= 5)
+  sum(x[i])
+  
+}
+
+auxWB2U <- calc_womansb2(DataUrb)
+auxWPR2U <- calc_womanspr2(DataUrb)
+auxWA2U <- calc_womansa2(DataUrb)
+auxWPA2U <- calc_womanspa2(DataUrb)
+auxWI2U <- calc_womansi2(DataUrb)
+auxWN2U <- 0
+
+auxWB2R <- calc_womansb2(DataRur)
+auxWPR2R <- calc_womanspr2(DataRur)
+auxWA2R <- calc_womansa2(DataRur)
+auxWPA2R <- calc_womanspa2(DataRur)
+auxWI2R <- calc_womansi2(DataRur)
+auxWN2R <- 0
+```
+
+
+### Ajustes
+```{r}
+# Total Raças
+auxP3 <- c(vecsomas3[3], vecsomas3[4], vecsomas3[5], vecsomas3[6], vecsomas3[7], vecsomas3[8], 0)
+
+auxP3 <- auxP3/vecsomas3[3]*100
+
+#Total Homens
+auxP3H <- c(auxHB, auxHPR, auxHA, auxHPA, auxHI, 0)
+auxP3H <- c(sum(auxP3H), auxHB, auxHPR, auxHA, auxHPA, auxHI, 0)
+auxP3H <- auxP3H/sum(auxP3H) * 100
+
+#Homens Urbanos
+auxP3H2U <- c(auxHB2U, auxHPR2U, auxHA2U, auxHPA2U, auxHI2U, 0)
+auxP3H2U <- c(sum(auxP3H2U), auxHB2U, auxHPR2U, auxHA2U, auxHPA2U, auxHI2U, 0)
+auxP3H2U <- auxP3H2U/sum(auxP3H2U) * 100
+
+#Homens Rurais
+auxP3H2R <- c(auxHB2R, auxHPR2R, auxHA2R, auxHPA2R, auxHI2R, 0)
+auxP3H2R <- c(sum(auxP3H2R), auxHB2R, auxHPR2R, auxHA2R, auxHPA2R, auxHI2R, 0)
+auxP3H2R <- auxP3H2R/sum(auxP3H2R) * 100
+
+#Total Mulheres
+auxP3W <- c(auxWB, auxWPR, auxWA, auxWPA, auxWI, 0)
+auxP3W <- c(sum(auxP3W), auxWB, auxWPR, auxWA, auxWPA, auxWI, 0)
+auxP3W <- auxP3W/sum(auxP3W) * 100
+
+#Mulheres Urbanas
+auxP3W2U <- c(auxWB2U, auxWPR2U, auxWA2U, auxWPA2U, auxWI2U, 0)
+auxP3W2U <- c(sum(auxP3W2U), auxWB2U, auxWPR2U, auxWA2U, auxWPA2U, auxWI2U, 0)
+auxP3W2U <- auxP3W2U/sum(auxP3W2U) * 100
+
+#Rurais
+auxP3W2R <- c(auxWB2R, auxWPR2R, auxWA2R, auxWPA2R, auxWI2R, 0)
+auxP3W2R <- c(sum(auxP3W2R), auxWB2R, auxWPR2R, auxWA2R, auxWPA2R, auxWI2R, 0)
+auxP3W2R <- auxP3W2R/sum(auxP3W2R) * 100
+
+#Total Urbano e Rural
+
+totUrb <- auxP3W2U + auxP3H2U
+
+totRur <- auxP3W2R + auxP3H2R
+
+
+#---------------------------------------
+#Total
+auxP3N <- c(vecsomas3[3], vecsomas3[4], vecsomas3[5], vecsomas3[6], vecsomas3[7], vecsomas3[8], 0)
+
+#Total Homens
+auxP3HN <- c(sum(auxP3H), auxHB, auxHPR, auxHA, auxHPA, auxHI, 0)
+#Urb
+auxP3H2UN <- c(sum(auxP3H2U), auxHB2U, auxHPR2U, auxHA2U, auxHPA2U, auxHI2U, 0)
+#Rur
+auxP3H2RN <- c(sum(auxP3H2R), auxHB2R, auxHPR2R, auxHA2R, auxHPA2R, auxHI2R, 0)
+
+
+#Total Mulheres
+auxP3WN <- c(sum(auxP3W), auxWB, auxWPR, auxWA, auxWPA, auxWI, 0)
+#Urb
+auxP3W2UN <- c(sum(auxP3W2U), auxWB2U, auxWPR2U, auxWA2U, auxWPA2U, auxWI2U, 0)
+#Rur
+auxP3W2RN <- c(sum(auxP3W2R), auxWB2R, auxWPR2R, auxWA2R, auxWPA2R, auxWI2R, 0)
+
+totUrbN <- auxP3W2UN + auxP3H2UN
+totRurN <- auxP3W2RN + auxP3H2RN
+
+#---------------------------------------
+
+
+#---------------------------------------
+#Total
+auxP3N <- c(vecsomas3[3], vecsomas3[4], vecsomas3[5], vecsomas3[6], vecsomas3[7], vecsomas3[8], 0)
+auxP3NP <- auxP3N/vecsomas3[3] *100
+
+#Total Homens
+auxP3HN <- c(sum(auxP3HN), auxHB, auxHPR, auxHA, auxHPA, auxHI, 0)
+auxP3HNP <- auxP3HN/sum(auxP3HN) *100
+
+#Urb
+auxP3H2UN <- c(sum(auxP3H2UN), auxHB2U, auxHPR2U, auxHA2U, auxHPA2U, auxHI2U, 0)
+auxP3H2UNP <- auxP3H2UN/sum(auxP3HN) *100
+#Rur
+auxP3H2RN <- c(sum(auxP3H2RN), auxHB2R, auxHPR2R, auxHA2R, auxHPA2R, auxHI2R, 0)
+auxP3H2RNP <- auxP3H2RN/sum(auxP3H2RN) *100
+
+#Total Mulheres
+auxP3WN <- c(sum(auxP3WN), auxWB, auxWPR, auxWA, auxWPA, auxWI, 0)
+auxP3WNP <- auxP3WN/sum(auxP3WN) *100
+#Urb
+auxP3W2UN <- c(sum(auxP3W2UN), auxWB2U, auxWPR2U, auxWA2U, auxWPA2U, auxWI2U, 0)
+auxP3W2UNP <- auxP3W2UN/sum(auxP3WN) *100
+#Rur
+auxP3W2RN <- c(sum(auxP3W2RN), auxWB2R, auxWPR2R, auxWA2R, auxWPA2R, auxWI2R, 0)
+auxP3W2RNP <- auxP3W2RN/sum(auxP3WN) *100
+
+totUrbN <- auxP3W2UN + auxP3H2UN
+totUrbNP <- totUrbN/vecsomas3[3] *100
+
+totRurN <- auxP3W2RN + auxP3H2RN
+totRurNP <- totRurN/vecsomas3[3] *100
+
+
+```
+
+
+### Ajustes
+```{r}
+mauxP3NP <- cbind(auxP3NP, totUrbNP, totRurNP,  auxP3HNP, auxP3H2UNP, auxP3H2RNP, auxP3WNP, auxP3W2UNP, auxP3W2RNP)
+
+rownames(mauxP3NP) <- c("Total", "Branca", "Preta", "Amarela", "Parda", "Indígina", "Sem Declaração") 
+colnames(mauxP3NP) <- c("Total", "Urbana", "Rural", "Homens", "Urbanos", "Rurais", "Mulheres", "Urbanas", "Rurais")
+
+
+
+```
+
+
+### Matriz de Verificação
+```{r}
+
+mauxP3N <- cbind(auxP3N, totUrbN, totRurN,  auxP3HN, auxP3H2UN, auxP3H2RN, auxP3WN, auxP3W2UN, auxP3W2RN)
+
+rownames(mauxP3N) <- c("Total", "Branca", "Preta", "Amarela", "Parda", "Indígina", "Sem Declaração") 
+colnames(mauxP3N) <- c("Total", "Urbana", "Rural", "Homens", "Urbanos_H", "Rurais_H", "Mulheres", "Urbanas_M", "Rurais_M")
+
+mauxP3NV <- mauxP3N/vecsomas3[3]*100
+
+vamosmais <- as.data.frame(mauxP3NV)
+
+
+
+```
+
+
+### Matriz de resultados
+```{r}
+
+mauxP3 <- cbind(auxP3, totUrb, totRur,  auxP3H, auxP3H2R, auxP3H2U, auxP3W, auxP3W2U, auxP3W2R)
+
+rownames(mauxP3) <- c("Total_C", "Branca", "Preta", "Amarela", "Parda", "Indígina", "Sem Declaração") 
+colnames(mauxP3) <- c("Total_L", "Urbana_T", "Rural_T", "Homens", "Urbanos_H", "Rurais_H", "Mulheres", "Urbanas_M", "Rurais_M")
+
+
+
+```
+
+
+
+### Tabela 3145 - Apresentação
+```{r}
+library(kableExtra)
+
+kbl(mauxP3NV) %>%
+  kable_paper() %>%
+  add_header_above(c(" ", "Total" = 3, "Homens" = 3, "Mulheres" = 3), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Sexo x Situação dos domicílios" = 9), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Unidade da Federação - Alagoas" = 9), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Tabela 3145 - População Residente - Percentual" = 9), color = "white", background="grey") #%>%
+```
+
+### Gráficos da Tabela 3145 
+```{r}
+library(ggplot2)
+
+barplot(t(as.matrix(vamosmais[-1, ])), beside=T)
+
+p1 <- ggplot(vamosmais, aes(x = row.names(vamosmais), y = Total)) +
+        geom_bar(stat = "identity") +
+        ggtitle("Fig. A: Default x-axis")
+
+p1
+
+
+
+```
+
+
+
+### Construção para tabela 3150
+```{r}
+#---------------------------------------#
+
+Pessoa1[Pessoa1 == "X"] <- 0
+Pessoa1 <- lapply(Pessoa1, as.numeric)
+Pessoa1 <- as.data.frame(Pessoa1)
+Somas <- colSums(Pessoa1)
+SomasDT <- as.data.frame(Somas)
+vecsomas <- SomasDT$Somas
+
+Pessoa13[Pessoa13 == "X"] <- 0
+Pessoa13 <- lapply(Pessoa13, as.numeric)
+Pessoa13 <- as.data.frame(Pessoa13)
+Somas13 <- colSums(Pessoa13)
+SomasDT13 <- as.data.frame(Somas13)
+vecsomas13 <- SomasDT13$Somas13
+
+#---------------------------------------#
+
+
+
+#---------------------------------------#
+
+
+
+auxP1 <- c(vecsomas[3], 
+         sum(vecsomas[4:8]), 
+         sum(vecsomas[9:13]), 
+         sum(vecsomas[14:8]), 
+         sum(vecsomas[19:28]), 
+         sum(vecsomas[29:38]), 
+         sum(vecsomas[39:48]), 
+         sum(vecsomas[49:58]), 
+         sum(vecsomas[59:79]))
+
+auxP1 
+
+
+
+
+
+auxP13 <- c(sum(vecsomas13[41:136], na.rm = TRUE), 
+         sum(vecsomas13[41:45]), 
+         sum(vecsomas13[46:50]), 
+         sum(vecsomas13[51:55]), 
+         sum(vecsomas13[56:65]), 
+         sum(vecsomas13[66:75]), 
+         sum(vecsomas13[76:85]), 
+         sum(vecsomas13[86:95], na.rm = TRUE), 
+         sum(vecsomas13[96:136], na.rm = TRUE))
+
+
+
+#---------------------------------------#
+
+
+
+#---------------------------------------#
+
+auxP1P <- c(auxP1[1]/auxP1[1], 
+          auxP1[2]/auxP1[1],
+          auxP1[3]/auxP1[1],
+          auxP1[4]/auxP1[1],
+          auxP1[5]/auxP1[1],
+          auxP1[6]/auxP1[1],
+          auxP1[7]/auxP1[1],
+          auxP1[8]/auxP1[1],
+          auxP1[9]/auxP1[1]) * 100
+
+
+auxP13P <- c(auxP13[1]/auxP13[1], 
+          auxP13[2]/auxP13[1],
+          auxP13[3]/auxP13[1],
+          auxP13[4]/auxP13[1],
+          auxP13[5]/auxP13[1],
+          auxP13[6]/auxP13[1],
+          auxP13[7]/auxP13[1],
+          auxP13[8]/auxP13[1],
+          auxP13[9]/auxP13[1]) * 100
+
+round(auxP13P ,digits=2)
+
+#---------------------------------------#
+
+
+bralf <- c(157621260, 10243078, 16495407, 16616829, 33189779, 27686157, 22391006, 15869709, 15129295)
+brpop <- c(176959640, 14969375, 17166761, 16990870, 34349603, 29633093, 24842718, 18416621, 20590599)
+
+
+mauxP1 <- rbind(bralf, auxP1, auxP13)
+colnames(mauxP1) <- c("Total", "5 aos 9 anos", "10 aos 14 anos", "15 aos 19 anos", "20 aos 29 anos", "30 aos 39 anos", "40 aos 49 anos", "50 aos 59 anos", "60 anos ou mais") 
+rownames(mauxP1) <- c("Brasil", "Alagoas", "Percentual")
+
+mauxP13P <- rbind(brpop, auxP1, auxP13P)
+colnames(mauxP13P) <- c("Total", "5 aos 9 anos", "10 aos 14 anos", "15 aos 19 anos", "20 aos 29 anos", "30 aos 39 anos", "40 aos 49 anos", "50 aos 59 anos", "60 anos ou mais") 
+rownames(mauxP13P) <- c("Brasil" ,"Alagoas", "Percentual")
+
+
+mauxP1Df <- as.data.frame(mauxP13P)
+
+options(scipen = 999)
+
+```
+
+
+### Tabela 3150 Apresentação com Percentual
+```{r}
+library(kableExtra)
+
+
+kbl(mauxP13P) %>%
+  kable_paper() %>%
+  add_header_above(c(" ", "Grupos por idade" = 9), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Censo do ano 2010 - Alfabetização" = 9), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Tabela 3150 - Pessoas cde 5 anos ou mais, total e as alfabetizadas, por grupo de idade - Resultados do Universo" = 9), color = "white", background="grey") #%>%
+
+
+
+```
+
+
+### Gráficos da Tabela 3150
+```{r}
+library(ggplot2)
+
+
+
+barplot(t(as.matrix(mauxP13P[-3, ])), beside=TRUE)
+```
+
+
+### Gráficos da Tabela 3150
+```{r}
+library(ggplot2)
+x <- c(mauxP1Df$`20 aos 29 anos`[1], mauxP1Df$`30 aos 39 anos`[1], mauxP1Df$`40 aos 49 anos`[1], mauxP1Df$`20 aos 29 anos`[2], mauxP1Df$`30 aos 39 anos`[2], mauxP1Df$`40 aos 49 anos`[2])  
+names(x)<- c("BR 20 aos 29","BR 30 aos 39","BR 40 aos 49","UF 20 aos 29","UF 30 aos 39","UF 40 aos 49")
+ggplot(data.frame(names=names(x), freq=x), aes(x=names, y=freq))+geom_bar(stat="identity")
+```
+
+
+
+### Trabalhando com os dados da 3152
+```{r}
+
+Domicilio1[Domicilio1 == "X"] <- 0
+Domicilio1 <- as.data.frame(sapply(Domicilio1, as.numeric))
+Domicilio1 <- as.data.frame(Domicilio1)
+SomasdeDom <- colSums(Domicilio1)
+SomasdeDomDT <- as.data.frame(SomasdeDom)
+vecsomasdeDom <- SomasdeDomDT$SomasdeDom
+
+Basico1[Basico1 == "X"] <- 0
+Basico1 <- as.data.frame(sapply(Basico1, as.numeric))
+Basico1 <- as.data.frame(Basico1)
+SomasdeBas <- colSums(Basico1)
+SomasdeBasDT <- as.data.frame(SomasdeBas)
+vecsomasdeBas <- SomasdeBasDT$SomasdeBas
+
+
+b <- Basico1$V001
+
+b <- sum(b, na.rm = TRUE)
+casa <- vecsomasdeDom[5]
+casacom <- vecsomasdeDom[6]
+apart <- vecsomasdeDom[7]
+
+ga <- Basico1$V001
+gb <- Domicilio1$V003
+gc <- Domicilio1$V004
+gd <- Domicilio1$V005
+
+graphdt <- data.frame(ga, gb, gc, gd)
+
+
+dif <- casa+casacom+apart
+outros <- b-dif
+
+auxD0 <- c(b, casa, casacom, apart, outros, 0)
+
+auxD0P <- c(b, casa, casacom, apart, outros, 0)/ b * 100
+
+auxD0Px <- c(casa, casacom, apart, outros, 0)/ b * 100
+
+#auxD0 <- c(sum(vecsomasdeDom[52:61]), sum(vecsomasdeDom[102:140]), sum(vecsomasdeDom[141:179]), sum(vecsomasdeDom[180:218]))
+
+#auxD0P <- c(sum(vecsomasdeDom[52:61]), sum(vecsomasdeDom[102:140]), sum(vecsomasdeDom[141:179]), sum(vecsomasdeDom[180:218]))/sum(vecsomasdeDom[52:61]) * 100
+
+matriz3152 <- rbind(auxD0P)
+colnames(matriz3152) <- c("Total", "Casa", "Casa de Vila", "Apartamento", "Cortiço", "Oca") 
+rownames(matriz3152) <- c("Percentual")
+
+mauxD0P <- as.data.frame(matriz3152)
+
+```
+
+
+### Tabela 3152
+```{r}
+library(kableExtra)
+
+
+kbl(mauxD0P) %>%
+  kable_paper() %>%
+  add_header_above(c(" ", "Ano x Domicílio" = 6), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Censo do ano 2010 " = 6), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Tabela 3152 - Tipos de Habitação" = 6), color = "white", background="grey") #%>%
+```
+
+### Gráficos da Tabela 3152
+```{r}
+library(ggplot2)
+library(tidyr)
+
+names <- c("Casa", "Casa de Vila", "Apartamento", "Cortiço", "Oca")
+
+barplot(t(as.matrix(auxD0Px)),
+            main = 'Percentual dos Tipos de Habitações',
+            xlab = names, ylab = 'Percetual',
+            names.arg = names(auxD0Px),
+            beside = TRUE,
+            space = c(0.05, 0))
+
+
+barplot(t(as.matrix(mauxD0P[, -1])), beside=TRUE)
+
+
+
+```
+
+
+```{r}
+### 3154
+ganheiros <- c(vecsomasdeDom[18], vecsomasdeDom[19], vecsomasdeDom[20], sum(vecsomasdeDom[21:24]), vecsomasdeDom[25])
+
+gc <- vecsomasdeDom[18]
+gs <- vecsomasdeDom[25]
+totalbanheiros <- gc + gs
+
+gr <- vecsomasdeDom[19]
+gf <- vecsomasdeDom[20]
+go <- sum(vecsomasdeDom[21:24])
+totalter <- gr + gf + go
+
+totban <- sum(ganheiros)
+
+banp <- data.frame(gc/totalbanheiros, gr/totalter, gf/totalter, go/totalter, gs/totalbanheiros) * 100
+
+
+```
+
+
+
+```{r}
+maux3154 <- rbind(banp)
+colnames(banp) <- c("C Banheiros", "C Rede de Esgoto", "C Fossa Séptica", "C Outros", "Sem Banheiros") 
+rownames(banp) <- c("Percentual")
+
+maux3154 <- as.data.frame(banp)
+```
+
+
+
+### Tabela 3154
+```{r}
+library(kableExtra)
+
+
+kbl(maux3154) %>%
+  kable_paper() %>%
+  add_header_above(c(" ", "Classificação" = 5), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Domicílios Particulares por existência de banheiro ou Sanitário" = 5), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Tabela 3154 - Existência de Banheiro e Esgotamento" = 5), color = "white", background="grey") #%>%
+```
+
+
+
+### Gráfico da Tabela 3154
+```{r}
+x <- c(maux3154$`C Banheiros`, maux3154$`C Rede de Esgoto`, maux3154$`C Fossa Séptica`, maux3154$`C Outros`, maux3154$`Sem Banheiros`)  
+names(x) <- c("C Banheiros", "C Rede de Esgoto", "C Fossa Séptica", "C Outros", "Sem Banheiros") 
+ggplot(data.frame(names=names(x), freq=x), aes(x=names, y=freq))+geom_bar(stat="identity", width = 0.25)
+```
+
+
+
+```{r}
+###3157 1
+
+total_abastecimento <- c(vecsomasdeDom[14], vecsomasdeDom[15], sum(vecsomasdeDom[16:17]))
+total_abastecimento2P <- c(sum(total_abastecimento), total_abastecimento)/sum(total_abastecimento) * 100
+zero <- c(0)
+
+lcoletado <- c(vecsomasdeDom[219], vecsomasdeDom[220], sum(vecsomasdeDom[221:222]))
+
+
+lcoletado2P <- c(sum(lcoletado)/sum(total_abastecimento), lcoletado/sum(total_abastecimento))* 100
+
+servico <- c(vecsomasdeDom[38]/sum(total_abastecimento), zero, zero, zero) * 100
+cacamba <- c(vecsomasdeDom[39]/sum(total_abastecimento), zero, zero, zero) * 100
+
+
+
+meudf <- t(data.frame(total_abastecimento2P, lcoletado2P, servico, cacamba, zero))
+
+teste <- c(total_abastecimento2P, lcoletado2P, servico, cacamba, zero)
+
+```
+
+
+```{r}
+meudf <- rbind(total_abastecimento2P, lcoletado2P, servico, cacamba, zero)
+colnames(meudf) <- c("Total", "Rede Geral", "Poço ou Nasc.", "Outra") 
+rownames(meudf) <- c("Total", "Coletado", "Por Serviço", "Em Caçamba", "Outros")
+
+meudf <- as.data.frame(meudf)
+```
+
+
+```{r}
+library(kableExtra)
+
+
+kbl(meudf) %>%
+  kable_paper() %>%
+  add_header_above(c(" ", "Tipo de Abastecimento" = 4), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Coleta de lixo e Abastacimento de Água " = 4), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Tabela 3157.1 - Tipo de Coleta x Tipo de Abastecimento" = 4), color = "white", background="grey") #%>%
+
+```
+
+### Gráficos da 3157 - 1 Total x Coletado
+```{r}
+library(dplyr)
+library(ggplot2)
+library(forcats)
+
+
+x <- c(meudf$`Total`[1], meudf$`Rede Geral`[1], meudf$`Poço`[1], meudf$`Outra`[1], meudf$`Total`[2], meudf$`Rede Geral`[2], meudf$`Poço`[2], meudf$`Outra`[2])  
+
+names(x) <- c("Total", "Rede Geral", "Poço ou Nasc.", "Outra", "Total Coletado", "Rede Geral Coletado", "Poço ou Nasc. Coletado", "Outras Coletado") 
+
+ggplot(data.frame(names=names(x), freq=x), aes(x=names, y=freq))+geom_bar(stat="identity", width = 0.25)
+```
+
+
+
+
+```{r}
+
+rede_geral <- Domicilio1$V012
+poco_nascente <- Domicilio1$V013
+outros <- Domicilio1$V014 + Domicilio1$V015
+
+
+
+destino_lixo <- c(vecsomasdeDom[37], vecsomasdeDom[38], vecsomasdeDom[39], sum(vecsomasdeDom[40:44]))
+
+
+
+dce <- vecsomasdeDom[45]
+dcc <- vecsomasdeDom[46]
+dof <- vecsomasdeDom[47]
+dse <- vecsomasdeDom[48]
+
+tot_energia <- dce+dse
+tot_outros <- dcc+dof
+totep <- tot_energia/tot_energia * 100
+
+dcep <- dce/tot_energia * 100
+dccp <- dcc/tot_outros * 100
+dofp <- dof/tot_outros* 100
+dsep <- dse/tot_energia * 100
+
+energia <- data.frame(tot_energia, dce, dcc, dof, dse)
+energiap <- data.frame(totep, dcep, dccp, dofp, dsep)
+
+maux31572 <- rbind(energiap)
+colnames(energiap) <- c("Total", "Energia_Sim", "Energia_Distribuidora", "Energia_Outros", "Energia_Não") 
+rownames(energiap) <- c("Percentual")
+
+```
+
+
+
+
+```{r}
+maux31572 <- rbind(energiap)
+colnames(energiap) <- c("Total", "Energia_Sim", "Energia_Distribuidora", "Energia_Outros", "Energia_Não") 
+rownames(energiap) <- c("Percentual")
+```
+
+
+
+
+### Tabela 3157 - 2
+```{r}
+library(kableExtra)
+
+
+kbl(maux31572) %>%
+  kable_paper() %>%
+  add_header_above(c(" ", "Abastecimento Energético" = 5), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Censo do ano 2010 " = 5), color = "white", background="grey") %>%
+  add_header_above(c(" ", "Tabela 3157.2 - Condição de Habitação x Abastecimento" = 5), color = "white", background="grey") #%>%
+
+
+```
+
+
+
+### Gráfico da Tabela 3157 - 2
+```{r}
+x <- c(maux31572$`Energia_Sim`[1], maux31572$Energia_Distribuidora[1], maux31572$Energia_Outros[1])  
+names(x) <- c("Com Energia", "Com Energia de Distribuidora", "Demais")
+ggplot(data.frame(names=names(x), freq=x), aes(x=names, y=freq))+geom_bar(stat="identity", width = 0.25)
+```
+

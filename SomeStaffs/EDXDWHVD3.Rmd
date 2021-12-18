@@ -1,0 +1,367 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(ggplot2)
+```
+
+
+```{r}
+
+data("gapminder") #loading data 
+df_visual <- as.data.frame(gapminder) #df format
+View(df_visual) #lets have a look
+
+```
+
+
+```{r}
+#lets try make a plot 
+library(tidyverse)
+df_visual %>%
+  ggplot(aes(year, fertility, color = country)) +
+  geom_point() 
+
+#nenhum resultado relevante
+```
+
+
+```{r}
+#uma alternativa seria filtra e limpar os dados dessa forma:
+
+df_visual[is.na(df_visual)] <- 0
+view(df_visual)
+
+```
+
+
+
+```{r}
+#lets try make a plot 
+library(tidyverse)
+df_visual %>%
+  ggplot(aes(year, fertility, color = country)) +
+  geom_point()
+
+#Continua não mostrando nada  
+```
+
+
+```{r}
+#Havard metod for format the data in to tidy form
+
+df_visual2 <- gapminder %>% 
+  filter(country %in% c("South Korea", "Germany")) %>% #filtra para mostrar somente os dados de dois países
+  select(country, year, fertility) #seleciona duas colunas (note que country precisa se repetir aqui, na minha opinião)
+head(tidy_data)
+view(df_visual2)
+```
+
+
+```{r}
+#same plot
+
+library(tidyverse)
+df_visual %>%                                        #com o df1 (nao está em formato tidy)
+  ggplot(aes(year, fertility, color = country)) +
+  geom_point()
+
+library(tidyverse) 
+df_visual2 %>%                                       #com o df2 (está em formato tidy)
+  ggplot(aes(year, fertility, color = country)) +
+  geom_point()  
+  
+```
+
+
+
+```{r}
+path <- system.file("extdata", package="dslabs")
+filename <- file.path(path,  "fertility-two-countries-example.csv")
+wide_data <- read_csv(filename)
+select(wide_data, country, `1960`:`1967`)
+
+
+#formato wide, não é está no formato tidy 
+```
+
+
+```{r}
+library(dslabs)
+data("gapminder")
+tidy_data <- gapminder %>% 
+  filter(country %in% c("South Korea", "Germany")) %>%
+  select(country, year, fertility)
+
+#já fiemos isso, chamamos o novo df de df_visual2
+```
+
+
+```{r}
+#reshaping the data
+
+#wide
+path <- system.file("extdata", package="dslabs")
+filename <- file.path(path,  "fertility-two-countries-example.csv")
+wide_data <- read_csv(filename)
+select(wide_data, country, `1960`:`1967`)
+
+
+#in to tiydy
+new_tidy_data <- wide_data %>%
+  gather(year, fertility, `1960`:`2015`)
+head(new_tidy_data)
+
+# agora cada row é uma informação
+```
+
+
+
+
+```{r}
+# gather all columns except country
+
+path <- system.file("extdata", package="dslabs")
+filename <- file.path(path,  "fertility-two-countries-example.csv")
+wide_data <- read_csv(filename)
+select(wide_data, country, `1960`:`1967`)
+
+
+new_tidy_data <- wide_data %>%
+gather(year, fertility, -country)
+head(new_tidy_data)
+#outra forma
+```
+
+
+
+```{r}
+#tentando fazer um plot
+new_tidy_data %>%
+  ggplot(aes(year, fertility, color = country)) +
+  geom_point()
+
+#é importante notar o motivo pelo qual as legendas dp gráfico ficaram embaralhadas
+#isso acontece pq ano não está aparecendo como um número, mas sim como character.
+```
+
+
+```{r}
+
+# convert gathered column names to numeric
+new_tidy_data <- wide_data %>%
+  gather(year, fertility, -country, convert = TRUE)
+class(new_tidy_data$year)
+
+#é uma forma de corrigir
+```
+
+```{r}
+new_tidy_data %>%
+  ggplot(aes(year, fertility, color = country)) +
+  geom_point()
+
+#resolvido
+```
+
+
+```{r}
+#Outra maneira
+
+#reshaping the data
+
+#wide
+path <- system.file("extdata", package="dslabs")
+filename <- file.path(path,  "fertility-two-countries-example.csv")
+wide_data <- read_csv(filename)
+select(wide_data, country, `1960`:`1967`)
+
+
+#in to tiydy
+new_tidy_data <- wide_data %>%
+  gather(year, fertility, `1960`:`2015`)
+head(new_tidy_data)
+
+# agora cada row é uma informação
+
+
+#vamos corrigir o character
+
+new_tidy_data$year <- as.numeric(new_tidy_data$year)
+```
+
+
+
+```{r}
+new_tidy_data %>%
+  ggplot(aes(as.numeric(year), fertility, color = country)) +
+  geom_point()
+
+#resolvido
+```
+
+
+
+
+```{r}
+new_tidy_data %>%
+  ggplot(aes(as.numeric(year), fertility, color = country)) +
+  geom_point()
+
+#resolvido
+```
+
+
+```{r}
+# a more likely case
+# variables
+# import data
+path <- system.file("extdata", package = "dslabs")
+filename <- file.path(path, "life-expectancy-and-fertility-two-countries-example.csv")
+raw_dat <- read_csv(filename)
+select(raw_dat, 1:5)
+
+# not tidy
+
+```
+
+
+```{r}
+dat <- raw_dat %>% gather(key, value, -country)
+head(dat)
+
+#aqui não se pode usar o ano como referência, pois há variáveis diferentes para cada um deles. Ano deixa de ser um número(?)
+
+#outro problema é que temos um conjunto que mostra informações separadas em duas linhas
+```
+
+
+```{r}
+dat <- raw_dat %>% gather(key, value, -country)
+head(dat)
+dat$key[1:5]
+
+#agora o problema é que nós temos anos e as outras variáveis. temos que separá-las
+```
+
+```{r}
+dat %>% separate(key, c("year", "variable_name"), "_")
+
+#ou
+
+dat %>% separate(key, c("year", "variable_name"))
+
+# o probblema é que perdemos um dado "expectancy"
+```
+
+```{r}
+dat %>% separate(key, c("year", "first_variable_name", "second_variable_name"), 
+                 fill = "right")
+
+#separamos year e o que vem depois do "_" e dissemos "separe em duas partes, preenchendo o que não tiver segunda parte com NA"
+```
+
+
+```{r}
+# uma forma melhor de fazer isso é:
+
+dat %>% separate(key, c("year", "variable_name"), sep = "_", extra = "merge")
+
+# ao inves de criar duas colunas, criou-se apenas uma, fazendo um merde com o segundo separador "_"
+
+#todavia temos uma coluna para duas variáveis, fertility e life_expectancy
+```
+
+
+```{r}
+#vamos separar em dusas com spread
+
+dat %>% separate(key, c("year", "variable_name"), sep = "_", extra = "merge") %>%
+  spread(variable_name, value) 
+```
+
+
+```{r}
+#full code
+dat %>% 
+  separate(key, c("year", "first_variable_name", "second_variable_name"), fill = "right") %>%
+  unite(variable_name, first_variable_name, second_variable_name, sep="_") %>%
+  spread(variable_name, value) %>%
+  rename(fertility = fertility_NA)
+```
+
+
+```{r}
+library(tidyverse)
+library(dslabs)
+```
+
+
+
+```{r}
+#Examine the built-in dataset co2. This dataset comes with base R, not dslabs - just type co2 to access the dataset.
+
+data("co2")
+co2
+```
+
+
+```{r}
+#Run the following command to define the co2_wide object:
+
+co2_wide <- data.frame(matrix(co2, ncol = 12, byrow = TRUE)) %>% 
+      setNames(1:12) %>%
+    mutate(year = as.character(1959:1997))
+
+co2_wide
+```
+
+
+```{r}
+co2_tidy <- gather(co2_wide,month,co2,-year)
+
+co2_tidy
+```
+
+
+```{r}
+#Use co2_tidy to plot CO2 versus month with a different curve for each year:
+
+co2_tidy %>% ggplot(aes(as.numeric(month), co2, color = year)) + geom_line()
+  
+```
+
+```{r}
+#Load the admissions dataset from dslabs, which contains college admission information for men and women across six majors, and remove the applicants percentage column:
+
+library(dslabs)
+data(admissions)
+dat <- admissions %>% select(-applicants)
+
+dat_tidy <- spread(dat, gender, admitted)
+dat_tidy
+```
+
+
+
+```{r}
+#Now use the admissions dataset to create the object tmp, which has columns major, gender, key and value:
+
+
+tmp <- gather(admissions, key, value, admitted:applicants)
+tmp
+
+#Combine the key and gender and create a new column called column_name to get a variable with the following values: admitted_men, admitted_women, applicants_men and applicants_women. Save the new data as tmp2.
+
+
+tmp2 <- unite(tmp, column_name, c(key, gender))
+ tmp2
+```
+
+```{r}
+#Which function can reshape tmp2 to a table with six rows and five columns named major, admitted_men, admitted_women, applicants_men and applicants_women?
+
+```
+
